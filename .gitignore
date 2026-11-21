@@ -1,0 +1,66 @@
+# Python environments
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Datasets and recordings
+data/
+*.wav
+*.flac
+*.mp3
+*.mkv
+*.mp4
+*.avi
+*.parquet
+
+# Model weights and training outputs
+checkpoints/
+runs/
+weights/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Training caches and generated artifacts
+*.log
+*.tmp
+*.bak
+*.py.*_backup
+*.csv
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+
+# IDE and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local debugging and backup files
+*_backup
+*_backup.*
+*.py.a*_backup
+*.orig
+*.rej
+
+# Local source archives and compressed datasets
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.rar
