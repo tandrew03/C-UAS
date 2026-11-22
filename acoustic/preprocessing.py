@@ -70,6 +70,20 @@ def load_manifest(path=MANIFEST_PATH):
 
         rows = list(reader)
 
+    # A relocated training dataset may retain original paths as
+    # identifiers while reading audio exclusively from validated WAV caches.
+    cache_manifest = DATA_ROOT / "acoustic_cache_manifest.csv"
+    cached_sources = {}
+
+    if cache_manifest.is_file():
+        with cache_manifest.open(newline="", encoding="utf-8-sig") as f:
+            for cache_row in csv.DictReader(f):
+                original = str(
+                    resolve_audio_path(cache_row["file_path"])
+                ).lower()
+                cached = resolve_audio_path(cache_row["cache_path"])
+                cached_sources[original] = cached
+
     validated = []
     seen = set()
 
@@ -80,9 +94,14 @@ def load_manifest(path=MANIFEST_PATH):
             audio_path = PROJECT_ROOT / audio_path
 
         if not audio_path.is_file():
-            raise FileNotFoundError(
-                f"Row {index}: {audio_path}"
-            )
+            # Training may use the cached WAV without its original file.
+            # Never accept a missing original without a real cache file.
+            cached = cached_sources.get(str(audio_path).lower())
+            if cached is None or not cached.is_file():
+                raise FileNotFoundError(
+                    f"Row {index}: original missing and no valid cache "
+                    f"available for {audio_path}"
+                )
 
         label = int(row["label"])
         if label not in (0, 1):
